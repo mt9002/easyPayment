@@ -2,7 +2,6 @@ package com.api.domain.services.mapper;
 
 import com.api.app.dto.BillDTO;
 import com.api.app.dto.PExpenserDTO;
-import com.api.app.dto.PersonalExpenseDTO;
 import com.api.domain.entities.Bill;
 import com.api.domain.entities.Client;
 import com.api.domain.entities.PersonalExpenses;
@@ -19,7 +18,8 @@ public class BillMapper {
                 dto.getEvent(),
                 dto.getMesa()
         );
-        
+        System.out.println("llego a mapper");
+        System.out.println(dto.getEvent());
         for (PExpenserDTO pe : dto.getPersonalExpenses()) {
             
             Client client = new Client();

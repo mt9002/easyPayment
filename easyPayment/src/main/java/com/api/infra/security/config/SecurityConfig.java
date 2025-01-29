@@ -22,24 +22,25 @@ public class SecurityConfig {
         this.authProvider = authProvider;
     }
 
-//    public SecurityConfig() {
-//        this.jwtAuthenticationFilter = null;
-//        this.authProvider = null;
-//    }
+    public SecurityConfig() {
+        this.jwtAuthenticationFilter = null;
+        this.authProvider = null;
+    }
 
     @Bean
     public SecurityFilterChain securityWebFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> 
-                csrf 
+                csrf  
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
                 .requestMatchers("/auth/**").permitAll()
+                //.requestMatchers("/bills/**", "/expenser/**").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                .requestMatchers("/home",
+                .requestMatchers("/home/**",
                         "/home/register",
-                        "/favicon.ico",
+                        "/favicon.ico", 
                         "/images/**",
                         "/").permitAll()
        

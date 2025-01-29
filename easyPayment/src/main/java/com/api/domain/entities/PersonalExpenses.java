@@ -23,11 +23,12 @@ public class PersonalExpenses {
 
     private String nameProduct;
     private Double price;
+    private Integer amount;
 
     @ManyToOne
     @JoinColumn(name = "bill_id")
     @JsonBackReference
-    private Bill bill;
+    private Bill bill; 
 
     public PersonalExpenses(){};
     

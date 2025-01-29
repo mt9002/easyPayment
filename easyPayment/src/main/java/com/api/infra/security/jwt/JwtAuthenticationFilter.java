@@ -9,11 +9,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -41,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
         final String requestUri = request.getRequestURI();
 
-//        System.out.println("Request URI: " + requestUri);
+        System.out.println("Request URI: " + requestUri);
         try {
             if (token != null) {
                 username = jwt.getUsernameFromToken(token);
@@ -60,8 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     validAcces(response);
                     return;
                 }
-                System.out.println(hasRole("ADMIN"));
-                System.out.println(hasRole("USER"));
 
                 if (isAdminUri(requestUri) && !hasRole("ADMIN")) {
                     System.out.println("Este es la validacion paa role ADMIN");
@@ -85,6 +85,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.error("JwtException", e);
             return;
         }
+        
+        if (isUserUri(requestUri) && !hasRole("USER")) {
+            System.out.println("Este es la validacion paa role USER");
+            validAcces(response);
+            return;
+        }
+
+        if (isAdminUri(requestUri) && !hasRole("ADMIN")) {
+            System.out.println("Este es la validacion paa role ADMIN");
+            validAcces(response);
+            return;
+        }
         filterChain.doFilter(request, response);
 
     }
@@ -102,7 +114,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean hasRole(String role) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        if (authentication == null) {
+            return false;  // Si no hay autenticación, no tiene roles
+        }
         boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(role));
         return isAdmin;
@@ -110,7 +124,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isUserUri(String requestUri) {
         // Lista de las URIs que deseas verificar
-        List<String> protectedUris = List.of(
+        List<String> protectedUris = List.of( 
+                "/bills/findByIdBill",
                 "/user/findById");
 
         // Verificar si alguna URI de la lista está contenida en requestUri
@@ -120,10 +135,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isAdminUri(String requestUri) {
         // Lista de URL para admin
         List<String> protectedUris = List.of(
+                
                 "/logistic/create",
                 "/user/update",
                 "/user/delete");
-
         // Verifica si alguna URI de la lista está contenida en requestUri
         return protectedUris.stream().anyMatch(requestUri::contains);
     }
