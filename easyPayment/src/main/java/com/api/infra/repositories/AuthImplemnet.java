@@ -4,39 +4,45 @@ import com.api.domain.entities.Client;
 import com.api.domain.interfaces.outgoing.IAuthRepository;
 import com.api.domain.interfaces.outgoing.jpaORM.UserORM;
 import com.api.domain.services.util.Response;
-import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class AuthImplemnet implements IAuthRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthImplemnet.class);
+    private final AuthenticationManager authenticationManager;
     private final UserORM userORM;
+    
 
     @Autowired
-    public AuthImplemnet(UserORM userORM) {
+    public AuthImplemnet(UserORM userORM, AuthenticationManager authenticationManager) {
         this.userORM = userORM;
+        this.authenticationManager = authenticationManager;
+        
     }
 
     @Override
     public Response register(Client user) {
+        System.out.println("LLEgo a implement");
         try {
             Client client = userORM.save(user);
             logger.info("Registro exitoso, Cliente: ", user.getUsername());
             return new Response(
                     "Registro exitoso",
-                    200,
+                    HttpStatus.OK.value(),
                     true,
                     client);
         } catch (Exception e) { 
             logger.error("Este es el ERROR CARE-VERGA ", e.getMessage());
             return new Response(
                     "ESTE ES EL ERROR CARE-VERGA: " + e.getMessage(),
-                    400,
+                    HttpStatus.BAD_REQUEST.value(),
                     false,
                     null);
         }
@@ -44,26 +50,26 @@ public class AuthImplemnet implements IAuthRepository {
 
     @Override
     public Response login(String email, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Response<UserDetails> findByEmail(String email) {
         try {
-            Optional<Client> client = userORM.findByEmail(email);
-            logger.info("User encontrado. Username: "+ client.get().getEmail());
+            Authentication authentication = this.authenticationManager(email, password);
             return new Response(
-                    "",
-                    200,
+                    "login exitoso",
+                    HttpStatus.OK.value(),
                     true,
-                    client.get());
+                    authentication);
         } catch (Exception e) {
             return new Response(
-                    e.getMessage(),
-                    400,
-                    false,
+                    "login no exitoso",
+                    HttpStatus.UNAUTHORIZED.value(),
+                    true,
                     null);
         }
+
+    }
+
+    private Authentication authenticationManager(String email, String password) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password));
     }
 
 }

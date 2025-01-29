@@ -44,6 +44,12 @@ public class BillsService implements IBillsService {
                 Double price = object.getPrice();
                 totals.put(client, totals.getOrDefault(client, 0.0) + price);
             }
+            
+            for (PersonalExpenses ob : personalExpensesSet) {
+                System.out.println(ob.getClient()+" "+ ob.getNameProduct()+ " " + ob.getPrice()
+                );
+            }
+
             for (Map.Entry<Client, Double> entry : totals.entrySet()) {
                 System.out.println("Name: " + entry.getKey().getName()+ ", SubTotal: " + entry.getValue());
             }

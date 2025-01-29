@@ -1,6 +1,5 @@
 package com.api.infra.security.config;
 
-import com.api.domain.interfaces.outgoing.IAuthRepository;
 import com.api.domain.interfaces.outgoing.jpaORM.UserORM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,11 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ApplicationConfig {
     
-    private final IAuthRepository authRepository;
+    private final UserORM userORM;
 
     @Autowired
-    public ApplicationConfig(IAuthRepository authRepository) {
-        this.authRepository = authRepository;
+    public ApplicationConfig(UserORM userORM) {
+        this.userORM = userORM;
     }
     
     @Bean
@@ -49,6 +47,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailService() {
-        return email -> authRepository.findByEmail(email).getData();
+        return email -> userORM.findByEmail(email)
+        .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 }
