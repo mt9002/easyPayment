@@ -97,12 +97,76 @@
         </dependency>
 
     </dependencies>
+ 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>test</build.profile.id>
+                <profileActive>test</profileActive>
+            </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>
+                            src/main/resources
+                        </directory>
+                        <filtering>true</filtering>
+                        <excludes>
+                            <exclude>application-dev.properties</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+                <profileActive>dev</profileActive>
+            </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>
+                            src/main/resources
+                        </directory>
+                        <filtering>true</filtering>
+                        <excludes>
+                            <exclude>application-test.properties</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            
+            <!-- Maven Surefire Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <useFile>false</useFile> <!-- Desactiva los archivos de log -->
+                    <forkCount>1</forkCount> <!-- Controla la cantidad de procesos para los tests -->
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile> <!-- Impide redirigir la salida a archivos -->
+                    <printSummary>true</printSummary> <!-- Habilita resumen al final -->
+                    <skipAfterFailureCount>0</skipAfterFailureCount> <!-- Detiene si se superan ciertos fallos -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
