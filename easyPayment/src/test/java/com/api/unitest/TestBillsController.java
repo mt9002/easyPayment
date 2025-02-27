@@ -59,7 +59,7 @@ public class TestBillsController {
                 .andExpect(jsonPath("$.message").value("factura encontrada"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.event").value("cumpleaño"));
+                .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 
     }
 }
