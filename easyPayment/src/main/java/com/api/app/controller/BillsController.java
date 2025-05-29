@@ -6,6 +6,7 @@ import com.api.domain.services.util.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,15 +29,21 @@ public class BillsController {
 
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     @PostMapping("/create")
-    public Response createBill(@RequestBody BillDTO billDTO) {
-        var response = billsService.createBill(billDTO);
-        return response;
+    public ResponseEntity<Response> createBill(@RequestBody BillDTO billDTO) {
+        
+        try {
+            Response response = billsService.createBill(billDTO);
+            System.out.println("ojooooooo"+ response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new Response("Error interno: " + e.getMessage(), 500, false, null));
+        }  
     }
 
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     @GetMapping("/findByIdBill")
     public Response findByIdBill(@RequestParam(value = "id") Long id) {
-        var response = billsService.findById(id);
+        Response response = billsService.findById(id);
         return response;
     }
 
@@ -44,14 +51,17 @@ public class BillsController {
         summary = "Acceso a un recurso protegido",
         security = @SecurityRequirement(name = "bearer-key")  // Requiere JWT
     )
+    
     @DeleteMapping("/delete")
-    public void deleteBill(@RequestParam(value = "id") Long id) {
-
+    public Response deleteBill(@RequestParam(value = "id") Long id) {
+        Response resp = billsService.deleteBill(id);
+        return resp;
     }
 
     @PatchMapping("/update")
-    public void update(@RequestBody BillDTO billDTO) {
-        billsService.updateBill(billDTO);
+    public Response update(@RequestBody BillDTO billDTO) {
+        Response resp = billsService.updateBill(billDTO);
+        return resp;
     }
 
 }

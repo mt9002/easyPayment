@@ -7,4 +7,5 @@ public interface IBillsService {
     public Response createBill(BillDTO billDTO);
     public Response findById(Long id); 
     public Response updateBill(BillDTO billDTO);
+    public Response deleteBill(Long id);
 }

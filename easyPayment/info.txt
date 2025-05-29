@@ -1,0 +1,14 @@
+mvn clean verify    
+mvn jacoco:report
+mvn test
+
+### Esto limpia la carpeta target/, compila, ejecuta los tests y genera el informe de cobertura con JaCoCo correctamente.
+
+
+| Nivel   | ¿Cuándo usarlo?                                                                     | ¿Aplica aquí?                                      |
+| ------- | ----------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `ERROR` | Fallas graves del sistema o que deben ser investigadas por el equipo de desarrollo. | ❌ No (el error lo causó el usuario, no el sistema) |
+| `WARN`  | Comportamientos inesperados pero no críticos.                                       | ✅ Sí                                               |
+| `INFO`  | Información general sobre el flujo.                                                 | ❌ No (esto no es información normal)               |
+| `DEBUG` | Detalles útiles para desarrolladores durante depuración.                            | ✅ Opcional                                         |
+| `TRACE` | Nivel más detallado (cada paso).                                                    | ❌ Demasiado                                        |

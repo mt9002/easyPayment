@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.api.domain.services;
 
 import com.api.domain.entities.Client;
@@ -23,7 +19,7 @@ public class UserService implements IUserService{
     
     @Override
     public Response<Client> getById(Long id) {
-        var resnponse  = iUserRepository.getById(id);
+        Response<Client> resnponse  = iUserRepository.getById(id);
         return resnponse;
     }
 }

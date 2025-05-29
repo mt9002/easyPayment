@@ -4,6 +4,7 @@ import com.api.domain.entities.Bill;
 import com.api.domain.interfaces.outgoing.IBillRepository;
 import com.api.domain.interfaces.outgoing.jpaORM.BillsORM;
 import com.api.domain.services.util.Response;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
@@ -20,8 +21,8 @@ public class BillImplement implements IBillRepository {
 
     @Override
     public Response createBill(Bill bill) {
+        
         try {
-
             Bill b = billsORM.save(bill);
 
             return new Response(
@@ -29,16 +30,10 @@ public class BillImplement implements IBillRepository {
                     HttpStatus.OK.value(),
                     true,
                     b.getId());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return new Response(
                     "Bill no creado " + e.getMessage(),
                     HttpStatus.BAD_REQUEST.value(),
-                    false,
-                    null);
-        } catch (Exception e) {
-            return new Response(
-                    "Error interno: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     false,
                     null);
         }
@@ -49,13 +44,13 @@ public class BillImplement implements IBillRepository {
         try {
             Bill bill = billsORM.findById(id)
                     .orElseThrow(() -> new RuntimeException("ID inválido o no encontrado"));
-            System.out.println(bill.getEvent());
+            
             return new Response( 
                     "bill encontrado", 
                     HttpStatus.OK.value(),
                     true,
                     bill);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return new Response(
                     "bill no encontrado, " + e.getMessage(),
                     HttpStatus.NOT_FOUND.value(),
@@ -68,13 +63,17 @@ public class BillImplement implements IBillRepository {
     public Response updateBill(Bill bill) {
 
         try {
-            billsORM.findById(bill.getId())
+            Bill billNew = billsORM.findById(bill.getId())
                     .orElseThrow(() -> new RuntimeException("bill not found"));
-
-            billsORM.save(bill);
+            
+            billNew.setEvent(bill.getEvent());
+            billNew.setId(bill.getId());
+            billNew.setMesa(bill.getMesa());
+            
+            billsORM.save(billNew);
 
             return new Response(
-                    "bill actualizada  ",
+                    "bill actualizada",
                     HttpStatus.OK.value(),
                     true,
                     null);
