@@ -6,16 +6,19 @@ import com.api.domain.entities.Client;
 import com.api.domain.entities.PersonalExpenses;
 import com.api.domain.interfaces.incoming.IPersonalExpenserService;
 import com.api.domain.interfaces.outgoing.jpaORM.ExpenserORM;
+import com.api.domain.services.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class PersonalExpenserService implements IPersonalExpenserService {
 
     private static final Logger logger = LoggerFactory.getLogger(PersonalExpenserService.class);
     private final ExpenserORM expenserORM;
+  
 
     @Autowired
     public PersonalExpenserService(ExpenserORM expenserORM) {
@@ -23,7 +26,7 @@ public class PersonalExpenserService implements IPersonalExpenserService {
     }
 
     @Override
-    public void createPersonalExpenses(PersonalExpenseDTO dto) {
+    public Response createPersonalExpenses(PersonalExpenseDTO dto) {
         PersonalExpenses personalExpense = new PersonalExpenses();
 
         Client client = new Client();
@@ -36,12 +39,14 @@ public class PersonalExpenserService implements IPersonalExpenserService {
         personalExpense.setPrice(dto.getPrice());
         personalExpense.setBill(bill);
         personalExpense.setClient(client);
-
+        
         try {
             logger.info("Creando personal expenser");
-            expenserORM.save(personalExpense);
+            PersonalExpenses personalExpenses =expenserORM.save(personalExpense);
+            return new Response("Personal expenses created", HttpStatus.OK.value(), true, personalExpenses.getId());
         } catch (Exception e) {
             logger.error("ESTE ES MI ERROR " + e.getMessage());
+            return new Response("Personal expenses not created", HttpStatus.BAD_REQUEST.value(), false, null);
         }
     }
 }

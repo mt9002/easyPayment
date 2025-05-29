@@ -1,9 +1,13 @@
 package com.api.app.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RegiterDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class RegisterDTO {
 
     private String name;
     private String lastName;

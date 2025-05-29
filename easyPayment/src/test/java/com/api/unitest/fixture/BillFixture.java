@@ -16,10 +16,10 @@ public class BillFixture {
     public static void beforeAll() {
         List<PExpenserDTO> personalExpenses = Arrays.asList(new PExpenserDTO(1L, "pizza", 15000D));
 
-        billDTO = new BillDTO(
-                "cumpleaños",
-                "10",
-                personalExpenses
-        );
+        billDTO = BillDTO.builder()
+                .event("cumpleaños")
+                .mesa("10")
+                .personalExpenses(personalExpenses)
+                .build();
     }
 }

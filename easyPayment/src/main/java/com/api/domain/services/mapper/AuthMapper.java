@@ -1,6 +1,6 @@
 package com.api.domain.services.mapper;
 
-import com.api.app.dto.RegiterDTO;
+import com.api.app.dto.RegisterDTO;
 import com.api.domain.entities.Client;
 import com.api.domain.entities.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class AuthMapper{
         this.passwordEncoder = passwordEncoder;
     }
     
-    public Client DtoToEntity(RegiterDTO registerRequestDTO) {
+    public Client DtoToEntity(RegisterDTO registerRequestDTO) {
         Client client = new Client(
                registerRequestDTO.getName(),
                registerRequestDTO.getLastName(),

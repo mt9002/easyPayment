@@ -8,6 +8,7 @@ import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Repository;
@@ -32,16 +33,17 @@ public class AuthImplemnet implements IAuthRepository {
         System.out.println("LLEgo a implement");
         try {
             Client client = userORM.save(user);
-            logger.info("Registro exitoso, Cliente: ", user.getUsername());
+            System.out.println(client);
+            logger.info("Registro exitoso, Cliente: " + client.getName());
             return new Response(
                     "Registro exitoso",
                     HttpStatus.OK.value(),
                     true,
                     client);
         } catch (Exception e) { 
-            logger.error("Este es el ERROR CARE-VERGA ", e.getMessage());
+            logger.error("Este es el ERROR  ", e.getMessage());
             return new Response(
-                    "ESTE ES EL ERROR CARE-VERGA: " + e.getMessage(),
+                    "ESTE ES EL ERROR " + e.getMessage(),
                     HttpStatus.BAD_REQUEST.value(),
                     false,
                     null);
@@ -57,11 +59,11 @@ public class AuthImplemnet implements IAuthRepository {
                     HttpStatus.OK.value(),
                     true,
                     authentication);
-        } catch (Exception e) {
+        } catch (BadCredentialsException e) {
             return new Response(
                     "login no exitoso",
                     HttpStatus.UNAUTHORIZED.value(),
-                    true,
+                    false,
                     null);
         }
 
