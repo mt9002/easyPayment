@@ -15,26 +15,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfig {
-    
+
     private final UserORM userORM;
 
     @Autowired
     public ApplicationConfig(UserORM userORM) {
         this.userORM = userORM;
     }
-    
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
-    {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
+    public AuthenticationProvider authenticationProvider() {
         //provedor
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        
+
         authenticationProvider.setUserDetailsService(userDetailService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;

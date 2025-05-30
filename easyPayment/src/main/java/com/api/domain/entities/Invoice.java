@@ -1,7 +1,5 @@
 package com.api.domain.entities;
 
-import java.util.List;
-
 public class Invoice {
     
 //    private String codeInvoce;

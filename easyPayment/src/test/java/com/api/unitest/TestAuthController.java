@@ -52,7 +52,6 @@ public class TestAuthController {
         String jsonRequest = objectMapper.writeValueAsString(loginDTO);
 
         Response response = new Response("Login exitoso", 200, true, "Token");
-        System.out.println("Ejecutando login");
         Mockito.when(authService.login(loginDTO)).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")

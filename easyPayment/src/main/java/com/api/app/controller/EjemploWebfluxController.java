@@ -21,7 +21,10 @@ public class EjemploWebfluxController {
     }
 
     @GetMapping("/operaciones")
-    public Mono<Response> calculator(@RequestParam int a, @RequestParam int b) {
-        return serviceCalculadora.operaciones(a, b);
+    public Mono<Response> calculator(@RequestParam double a, @RequestParam double b) {
+        System.out.println("llego el valor ..."+a);
+        Mono<Response> resp= serviceCalculadora.operaciones(a, b);
+
+        return resp;
     }
 }

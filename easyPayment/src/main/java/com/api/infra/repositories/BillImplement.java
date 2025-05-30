@@ -4,7 +4,6 @@ import com.api.domain.entities.Bill;
 import com.api.domain.interfaces.outgoing.IBillRepository;
 import com.api.domain.interfaces.outgoing.jpaORM.BillsORM;
 import com.api.domain.services.util.Response;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;

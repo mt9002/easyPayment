@@ -56,6 +56,30 @@ public class TestBillFailed {
         
         // CleanUp -- @Transactional and @Rollback
     }
+    
+        @Test
+    @Transactional
+    @Rollback
+    void testCreateBill_InternalServerErrorController(TestInfo testInfo, TestReporter testReporter) throws Exception {
+        
+        // Arrage
+        Client client2 = factoryData.createClient();
+        String token2 = factoryData.loginClient(client2);
+        BillDTO billDTO = new BillDTO();
+        billDTO.setEvent("sdasd");
+        billDTO.setMesa("10");
+        String jsonRequest = new ObjectMapper().writeValueAsString(billDTO);
+        Mockito.when(billsORM.save(Mockito.any())).thenThrow(new Exception("Error simulado"));
+        
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/bills/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token2).content(jsonRequest))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+        
+        // CleanUp -- @Transactional and @Rollback
+    }
 
     @Test
     @Transactional

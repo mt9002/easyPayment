@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -45,10 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
         final String requestUri = request.getRequestURI();
 
-        System.out.println("Request URI: " + requestUri);
         try {
             if (token != null) {
-                System.out.println("Resvisando el token ........");
+                System.out.println(!hasRole("ROLE_USER"));
                 username = jwt.getUsernameFromToken(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -60,6 +61,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                 }
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                System.out.println("Esta es la Authentication:...... " + authentication);
+                if (authentication != null) {
+                    System.out.println("Authorities no null: " + authentication.getAuthorities());
+                }
+
+                if (isUserUri(requestUri) && hasRole("ROLE_USER")) {
+                    validAcces(response);
+                    return;
+                }
+
             }
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -84,11 +97,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (isUserUri(requestUri) && hasRole("USER")) {
-            validAcces(response);
-            return;
-        }
-
         filterChain.doFilter(request, response);
 
     }
@@ -109,7 +117,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authentication == null) {
             return false;  // Si no hay autenticación, no tiene roles
         }
-        boolean isAdmin = authentication.isAuthenticated() && authentication.getAuthorities().stream()
+        boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(role));
         return isAdmin;
     }
@@ -123,7 +131,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     public void validAcces(HttpServletResponse response) throws IOException {
-        System.out.println("ENTRANDO A VALID ACCES");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         Response resp = new Response("No tienes permiso para acceder a este recurso.", HttpServletResponse.SC_FORBIDDEN, false, null);
         String json = objectMapper.writeValueAsString(resp);

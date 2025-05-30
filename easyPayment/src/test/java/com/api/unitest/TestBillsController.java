@@ -86,6 +86,27 @@ public class TestBillsController {
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 
     }
+    
+        @Test
+    public void testCreateBillException(TestInfo testInfo, TestReporter testReporter) throws Exception {
+
+        BillDTO billDto = BillFixture.billDTO;
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonRequest = objectMapper.writeValueAsString(billDto);
+
+        Mockito.when(billService.createBill(Mockito.any())).thenThrow(new RuntimeException("Error simulado"));
+
+       
+        mockMvc.perform(MockMvcRequestBuilders.post("/bills/create")
+                .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Error interno: Error simulado"))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.event").value("cumpleaños"));
+
+    }
 
     @Test
     public void testDeleteBill(TestInfo testInfo, TestReporter testReporter) throws Exception {
@@ -96,7 +117,6 @@ public class TestBillsController {
         Response response = new Response("factura eliminada", 200, true, data);
 
         Mockito.when(billService.deleteBill(id_bill)).thenReturn(response);
-        System.out.println("ENTRO A LOS TEST");
         mockMvc.perform(MockMvcRequestBuilders.delete("/bills/delete")
                 .param("id", String.valueOf(id_bill))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -118,7 +138,6 @@ public class TestBillsController {
 
         Mockito.when(billService.updateBill(billDto)).thenReturn(response);
 
-        System.out.println("ENTRO A LOS TEST");
         mockMvc.perform(MockMvcRequestBuilders.patch("/bills/update")
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
                 .andExpect(status().isOk())

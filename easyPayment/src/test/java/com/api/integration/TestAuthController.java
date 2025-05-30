@@ -130,7 +130,7 @@ public class TestAuthController {
     @Test
     @Transactional
     @Rollback
-    public void testLoginTokenInvalid(TestInfo testInfo, TestReporter testReporter) throws Exception {
+    public void testLoginJWTFailed(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
         String tokenInvalid = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
 
@@ -144,9 +144,9 @@ public class TestAuthController {
     @Test
     @Transactional
     @Rollback
-    public void testLoginTokenVacio(TestInfo testInfo, TestReporter testReporter) throws Exception {
+    public void testLoginTokenInvalid(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
-        String tokenInvalid = "OiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
+        String tokenInvalid = "ryJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/bills/findByIdBill")
                 .contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + tokenInvalid).param("id", String.valueOf(2L)))
@@ -160,12 +160,11 @@ public class TestAuthController {
     @Transactional
     @Rollback
     public void testLoginRoleUserFailed(TestInfo testInfo, TestReporter testReporter) throws Exception {
-
         Client client = factoryData.createClient();
         String token = factoryData.loginClient(client);
-
         mockMvc.perform(MockMvcRequestBuilders.get("/calculadora/operaciones")
-                .contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
                 .param("a", "2").param("a", "34"))
                 .andExpect(jsonPath("$.message").value("No tienes permiso para acceder a este recurso."))
                 .andExpect(jsonPath("$.status").value(403))

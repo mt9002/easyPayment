@@ -35,7 +35,6 @@ public class TestPersonalExpenserController {
 
         Client client = factoryData.createClient();
         Long idBill = factoryData.createBill(client);
-        System.out.println("iiid de bill" + idBill);
         String token = factoryData.loginClient(client);
 
         PersonalExpenseDTO personalExpenses = new PersonalExpenseDTO(idBill, client.getId(), "Pastel", 2500D);
@@ -49,6 +48,27 @@ public class TestPersonalExpenserController {
                 .andExpect(jsonPath("$.message").value("Personal expenses created"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true));
+    }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void testCreatePersonalExpenserFailed(TestInfo testInfo, TestReporter testReporter) throws Exception {
+
+        Client client = factoryData.createClient();
+        factoryData.createBill(client);
+        String token = factoryData.loginClient(client);
+
+        PersonalExpenseDTO personalExpenses = new PersonalExpenseDTO(1L, 7L, "Pastel", 2500D);
+
+        String jsonRequest = new ObjectMapper().writeValueAsString(personalExpenses);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/expenser/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token).content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Personal expenses not created"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.success").value(false));
     }
 }

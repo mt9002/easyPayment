@@ -28,7 +28,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public Response login(@RequestBody LoginDTO loginDTO) {
-        System.out.println(loginDTO.getEmail());
         return authService.login(loginDTO);
     }
 }

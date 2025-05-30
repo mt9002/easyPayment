@@ -21,8 +21,6 @@ public class BillMapper {
         if (dto.getPersonalExpenses() != null) {
             Set<PersonalExpenses> personalExpensesSet = new HashSet<>();
 
-            System.out.println("llego a mapper");
-            System.out.println(dto.getEvent());
             for (PExpenserDTO pe : dto.getPersonalExpenses()) {
 
                 Client client = new Client();

@@ -29,22 +29,22 @@ public class BillsController {
 
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     @PostMapping("/create")
-    public ResponseEntity<Response> createBill(@RequestBody BillDTO billDTO) {
+    public ResponseEntity createBill(@RequestBody BillDTO billDTO) {
         
         try {
-            Response response = billsService.createBill(billDTO);
-            System.out.println("ojooooooo"+ response);
-            return ResponseEntity.ok(response);
+            Response resp = billsService.createBill(billDTO);
+
+            return ResponseEntity.status(resp.getStatus()).body(resp);
         } catch (Exception e) {
-            return ResponseEntity.ok(new Response("Error interno: " + e.getMessage(), 500, false, null));
+            return ResponseEntity.badRequest().body(new Response("Error interno: " + e.getMessage(), 400, false, null));
         }  
     }
 
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     @GetMapping("/findByIdBill")
-    public Response findByIdBill(@RequestParam(value = "id") Long id) {
-        Response response = billsService.findById(id);
-        return response;
+    public ResponseEntity findByIdBill(@RequestParam(value = "id") Long id) {
+        Response resp = billsService.findById(id);
+        return ResponseEntity.status(resp.getStatus()).body(resp);
     }
 
     @Operation(
@@ -53,15 +53,15 @@ public class BillsController {
     )
     
     @DeleteMapping("/delete")
-    public Response deleteBill(@RequestParam(value = "id") Long id) {
+    public ResponseEntity deleteBill(@RequestParam(value = "id") Long id) {
         Response resp = billsService.deleteBill(id);
-        return resp;
+        return ResponseEntity.status(resp.getStatus()).body(resp);
     }
 
     @PatchMapping("/update")
-    public Response update(@RequestBody BillDTO billDTO) {
+    public ResponseEntity update(@RequestBody BillDTO billDTO) {
         Response resp = billsService.updateBill(billDTO);
-        return resp;
+        return ResponseEntity.status(resp.getStatus()).body(resp);
     }
 
 }

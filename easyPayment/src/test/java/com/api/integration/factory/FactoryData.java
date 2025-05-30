@@ -36,17 +36,15 @@ public class FactoryData {
     }
 
     public String loginClient(Client client) {
-        System.out.println("haciendo login dos");
         LoginDTO loginDTO = new LoginDTO("ruper@gmail.com", "12345");
-
+        
         Response<String> token = authService.login(loginDTO);
+        System.out.println(token);
 
         return token.getData();
     }
 
     public void personalExpenser(Client client) {
-        System.out.println("Creando gasto personal para cliente: " + client.getEmail());
-        System.out.println("Creando gasto personal para cliente: " + client.getId());
         List<PersonalExpenseDTO> personalExpenses = new ArrayList<>();
         PersonalExpenseDTO personalExpenseDTO = new PersonalExpenseDTO();
         personalExpenseDTO.setClient(client.getId());

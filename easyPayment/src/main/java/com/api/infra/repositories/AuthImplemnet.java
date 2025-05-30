@@ -30,10 +30,8 @@ public class AuthImplemnet implements IAuthRepository {
 
     @Override
     public Response register(Client user) {
-        System.out.println("LLEgo a implement");
         try {
             Client client = userORM.save(user);
-            System.out.println(client);
             logger.info("Registro exitoso, Cliente: " + client.getName());
             return new Response(
                     "Registro exitoso",

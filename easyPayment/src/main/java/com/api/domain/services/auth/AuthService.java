@@ -49,6 +49,7 @@ public class AuthService implements IAuthService {
                 );
             } else {
                 Client user = (Client) response.getData().getPrincipal();
+                System.out.println(user);
                 String token = jwt.getToken(user);
                 return new Response(
                         response.getMessage(),
