@@ -1,11 +1,11 @@
 package com.api.unitest;
 
-import com.api.app.controller.BillsController;
-import com.api.app.dto.BillDTO;
+import com.api.bill.app.controller.BillsController;
+import com.api.auth.app.dto.BillDTO;
 import com.api.confg.NoSecurityConfig;
-import com.api.domain.interfaces.incoming.IBillsService;
-import com.api.domain.interfaces.outgoing.IJWT;
-import com.api.domain.services.util.Response;
+import com.api.bill.domain.incoming.IBillsService;
+import com.api.auth.infra.security.IJWT;
+import com.api.util.Response;
 import com.api.unitest.fixture.BillFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,16 +47,21 @@ public class TestBillsController {
     @Test
     public void testFindByIdBill(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
+        // Arrange ############################################################################
         Long id_bill = 1L;
         BillDTO data = BillFixture.billDTO;
 
-        Response response = new Response("factura encontrada", 200, true, data);
+        Response responseFake = new Response("factura encontrada", 200, true, data); // Response quemado fake
 
-        Mockito.when(billService.findById(id_bill)).thenReturn(response);
-        
-        mockMvc.perform(MockMvcRequestBuilders.get("/bills/findByIdBill")
+        Mockito.when(billService.findById(id_bill)).thenReturn(responseFake);
+
+        MockHttpServletRequestBuilder requestMock = MockMvcRequestBuilders
+                .get("/bills/findByIdBill")
                 .param("id", String.valueOf(id_bill))
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // Act and Assert #####################################################################
+        mockMvc.perform(requestMock)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("factura encontrada"))
                 .andExpect(jsonPath("$.status").value(200))
@@ -68,7 +74,7 @@ public class TestBillsController {
     public void testCreateBill(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
         BillDTO billDto = BillFixture.billDTO;
-        
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(billDto);
 
@@ -76,7 +82,6 @@ public class TestBillsController {
 
         Mockito.when(billService.createBill(billDto)).thenReturn(response);
 
-       
         mockMvc.perform(MockMvcRequestBuilders.post("/bills/create")
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
                 .andExpect(status().isOk())
@@ -86,25 +91,23 @@ public class TestBillsController {
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 
     }
-    
-        @Test
+
+    @Test
     public void testCreateBillException(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
         BillDTO billDto = BillFixture.billDTO;
-        
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(billDto);
 
         Mockito.when(billService.createBill(Mockito.any())).thenThrow(new RuntimeException("Error simulado"));
 
-       
         mockMvc.perform(MockMvcRequestBuilders.post("/bills/create")
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
-                .andExpect(status().isOk())
+                .andExpect(status().is(400))
                 .andExpect(jsonPath("$.message").value("Error interno: Error simulado"))
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.event").value("cumpleaños"));
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.success").value(false));
 
     }
 

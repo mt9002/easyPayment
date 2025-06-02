@@ -1,11 +1,11 @@
 package com.api.unitest;
 
-import com.api.app.controller.UserController;
+import com.api.auth.app.controller.UserController;
 import com.api.confg.NoSecurityConfig;
-import com.api.domain.entities.Client;
-import com.api.domain.interfaces.incoming.IUserService;
-import com.api.domain.interfaces.outgoing.IJWT;
-import com.api.domain.services.util.Response;
+import com.api.auth.domain.entity.Client;
+import com.api.auth.domain.incoming.IUserService;
+import com.api.auth.infra.security.IJWT;
+import com.api.util.Response;
 import com.api.unitest.fixture.DTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

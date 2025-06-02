@@ -1,15 +1,15 @@
 package com.api.integration.factory;
 
-import com.api.app.dto.BillDTO;
-import com.api.app.dto.LoginDTO;
-import com.api.app.dto.PExpenserDTO;
-import com.api.app.dto.PersonalExpenseDTO;
-import com.api.app.dto.RegisterDTO;
-import com.api.domain.entities.Client;
-import com.api.domain.interfaces.incoming.IAuthService;
-import com.api.domain.interfaces.incoming.IBillsService;
-import com.api.domain.interfaces.incoming.IPersonalExpenserService;
-import com.api.domain.services.util.Response;
+import com.api.auth.app.dto.BillDTO;
+import com.api.auth.app.dto.LoginDTO;
+import com.api.bill.app.dto.PExpenserDTO;
+import com.api.bill.app.dto.PersonalExpenseDTO;
+import com.api.auth.app.dto.RegisterDTO;
+import com.api.auth.domain.entity.Client;
+import com.api.auth.domain.incoming.IAuthService;
+import com.api.bill.domain.incoming.IBillsService;
+import com.api.personalExpenser.domain.incoming.IPersonalExpenserService;
+import com.api.util.Response;
 import static com.api.unitest.fixture.BillFixture.billDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,6 @@ public class FactoryData {
         LoginDTO loginDTO = new LoginDTO("ruper@gmail.com", "12345");
         
         Response<String> token = authService.login(loginDTO);
-        System.out.println(token);
 
         return token.getData();
     }

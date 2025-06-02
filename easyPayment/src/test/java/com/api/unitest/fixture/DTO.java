@@ -1,11 +1,11 @@
 package com.api.unitest.fixture;
 
-import com.api.app.dto.BillDTO;
-import com.api.app.dto.LoginDTO;
-import com.api.app.dto.PExpenserDTO;
-import com.api.app.dto.RegisterDTO;
-import com.api.domain.entities.Client;
-import com.api.domain.entities.Role;
+import com.api.auth.app.dto.BillDTO;
+import com.api.auth.app.dto.LoginDTO;
+import com.api.bill.app.dto.PExpenserDTO;
+import com.api.auth.app.dto.RegisterDTO;
+import com.api.auth.domain.entity.Client;
+import com.api.auth.domain.entity.Role;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
