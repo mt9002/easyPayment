@@ -1,9 +1,9 @@
 package com.api.integration.bill;
 
-import com.api.auth.app.dto.BillDTO;
-import com.api.bill.app.dto.PExpenserDTO;
-import com.api.bill.domain.service.TotalPay;
-import com.api.auth.domain.entity.Client;
+import com.api.bill.presentation.dto.BillDTO;
+import com.api.bill.presentation.dto.PExpenserDTO;
+import com.api.bill.app.service.TotalPay;
+import com.api.auth.infra.presistence.entityJpa.Client;
 import com.api.integration.factory.FactoryData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

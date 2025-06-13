@@ -1,15 +1,15 @@
 package com.api.integration.factory;
 
-import com.api.auth.app.dto.BillDTO;
-import com.api.auth.app.dto.LoginDTO;
-import com.api.bill.app.dto.PExpenserDTO;
-import com.api.bill.app.dto.PersonalExpenseDTO;
-import com.api.auth.app.dto.RegisterDTO;
-import com.api.auth.domain.entity.Client;
-import com.api.auth.domain.incoming.IAuthService;
-import com.api.bill.domain.incoming.IBillsService;
-import com.api.personalExpenser.domain.incoming.IPersonalExpenserService;
-import com.api.util.Response;
+import com.api.bill.presentation.dto.BillDTO;
+import com.api.auth.presentation.dto.LoginDTO;
+import com.api.bill.presentation.dto.PExpenserDTO;
+import com.api.bill.presentation.dto.PersonalExpenseDTO;
+import com.api.auth.presentation.dto.RegisterDTO;
+import com.api.auth.infra.presistence.entityJpa.Client;
+import com.api.auth.domain.ports.in.IAuthService;
+import com.api.bill.domain.ports.incoming.IBillsService;
+import com.api.bill.domain.ports.incoming.IPersonalExpenserService;
+import com.api.auth.app.service.util.Response;
 import static com.api.unitest.fixture.BillFixture.billDTO;
 import java.util.ArrayList;
 import java.util.List;

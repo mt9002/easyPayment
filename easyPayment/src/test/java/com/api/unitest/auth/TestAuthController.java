@@ -1,10 +1,11 @@
 package com.api.unitest.auth;
 
-import com.api.auth.app.controller.AuthController;
-import com.api.auth.app.dto.LoginDTO;
-import com.api.auth.app.dto.RegisterDTO;
-import com.api.auth.domain.incoming.IAuthService;
-import com.api.util.Response;
+import com.api.auth.presentation.controller.AuthController;
+import com.api.auth.presentation.dto.LoginDTO;
+import com.api.auth.presentation.dto.RegisterDTO;
+import com.api.auth.domain.ports.in.IAuthService;
+import com.api.auth.app.service.util.Response;
+import com.api.auth.app.service.util.ResultState;
 import com.api.unitest.fixture.DTO;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class TestAuthController {
@@ -38,16 +40,16 @@ public class TestAuthController {
         // Arrange
         LoginDTO loginDTO = DTO.loginDTO;
 
-        Response response = new Response("Login exitoso", 200, true, "Token");
+        Response response = Response.success("Login exitoso", "Token");
         Mockito.when(authService.login(loginDTO)).thenReturn(response);
         
         // Act
-        authController.login(loginDTO);
+        ResponseEntity<Response> resp = authController.login(loginDTO);
         
         // Assert
         assertNotNull(response);
-        assertEquals(200, response.getStatus());
-        assertTrue(response.isSuccess());
+        assertEquals("Login exitoso", resp.getBody().getMessage());
+        assertEquals("Token", resp.getBody().getData());
         
     }
 
@@ -56,20 +58,16 @@ public class TestAuthController {
         
         // Arrange
         RegisterDTO registerDTO = DTO.registerDTO;
-        Response response = new Response("Registro exitoso", 200, true, "TokenFake");
+        Response response = Response.success("Registro exitoso", "TokenFake");
         Mockito.when(authService.register(registerDTO)).thenReturn(response);
 
         // Act
-        Response resp = authController.register(registerDTO);
+        ResponseEntity<Response> resp = authController.register(registerDTO);
         
         // Assert
         assertNotNull(response);
-        assertEquals(200, response.getStatus());
-        assertTrue(response.isSuccess());
-        assertEquals("TokenFake", resp.getData())
-        
-        
-       ;
+        assertEquals("Registro exitoso", resp.getBody().getMessage());
+        assertEquals("TokenFake", resp.getBody().getData());
     }
 
 }

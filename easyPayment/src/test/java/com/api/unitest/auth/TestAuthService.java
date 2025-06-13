@@ -1,31 +1,28 @@
 package com.api.unitest.auth;
 
-import com.api.auth.app.dto.RegisterDTO;
-import com.api.auth.domain.entity.Client;
-import com.api.auth.domain.service.AuthMapper;
-import com.api.auth.domain.service.AuthService;
-import com.api.auth.infra.outgoing.IAuthRepository;
-import com.api.auth.infra.outgoing.UserORM;
-import com.api.auth.infra.repository.AuthImplemnet;
+import com.api.auth.domain.entity.User;
 import com.api.unitest.fixture.DTO;
-import com.api.util.Response;
-import static org.junit.jupiter.api.Assertions.*;
+import com.api.auth.app.service.util.Response;
+import com.api.auth.app.service.util.ResultState;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.api.auth.infra.presistence.ClientORM;
+import com.api.auth.infra.presistence.repository.UserImplement;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.mockito.InjectMocks;
 
 @ExtendWith(MockitoExtension.class)
 public class TestAuthService {
 
     @Mock
-    UserORM userORM;;
+    ClientORM userORM;;
 
     @InjectMocks
-    private AuthImplemnet authRepository;
+    private UserImplement userRepository;
 
     @BeforeAll
     public static void setup() {
@@ -36,24 +33,18 @@ public class TestAuthService {
     public void registerFailed() throws Exception {
 
         // Arrange
-        Client client = DTO.client;
-        Response expected = new Response("ERROR Register not found RuntimeException", 400, false, null);
+        User user = DTO.user;
         
-        Mockito.when(userORM.save(client)).thenThrow(new RuntimeException("RuntimeException"));
+        User userexpected = new User("Mao", "Tov", "mao@gmail", "12345");
+        
+        Mockito
+        .when(userORM.save(Mockito.any())).thenThrow(new RuntimeException("RuntimeException"));
 
         // Act
-        Response resp = authRepository.register(client);
+        User userActual = userRepository.register(user);
 
         // Assert
-        asserts(expected, resp);
+        assertEquals(userexpected.getEmail(), userActual.getEmail());
 
     }
-
-    private void asserts(Response expected, Response actual) {
-        assertEquals(expected.getMessage(), actual.getMessage());
-        assertEquals(expected.getStatus(), actual.getStatus());
-        assertFalse(actual.isSuccess());
-        assertEquals(expected.getData(), actual.getData());
-    }
-;
 }

@@ -1,6 +1,6 @@
 package com.api.integration.webFlex;
 
-import com.api.auth.domain.entity.Client;
+import com.api.auth.infra.presistence.entityJpa.Client;
 import com.api.integration.factory.FactoryData;
 
 import org.junit.jupiter.api.Test;

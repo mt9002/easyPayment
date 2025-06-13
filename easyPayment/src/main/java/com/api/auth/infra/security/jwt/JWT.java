@@ -15,7 +15,7 @@ import java.util.function.Function;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JWT implements IJWT {
+public class JWT implements IJWT{
 
     private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
 
@@ -27,7 +27,6 @@ public class JWT implements IJWT {
                 .toList());
         return getToken(extraClaims, user);
     }
-    
 
     @Override
     public String getUsernameFromToken(String token) {
@@ -61,7 +60,7 @@ public class JWT implements IJWT {
                 .addClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 600 * 24))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

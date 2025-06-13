@@ -1,7 +1,7 @@
 package com.api.ejemploWebFlexReactive.app;
 
 import com.api.ejemploWebFlexReactive.domain.Iservice;
-import com.api.util.Response;
+import com.api.auth.app.service.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

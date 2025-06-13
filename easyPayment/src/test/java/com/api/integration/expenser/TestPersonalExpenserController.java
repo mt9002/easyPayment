@@ -1,8 +1,8 @@
 package com.api.integration.expenser;
 
-import com.api.bill.app.dto.PersonalExpenseDTO;
+import com.api.bill.presentation.dto.PersonalExpenseDTO;
 import com.api.confg.SilentLogsTest;
-import com.api.auth.domain.entity.Client;
+import com.api.auth.infra.presistence.entityJpa.Client;
 import com.api.integration.factory.FactoryData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;

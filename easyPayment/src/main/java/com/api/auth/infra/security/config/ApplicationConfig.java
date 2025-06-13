@@ -1,6 +1,5 @@
 package com.api.auth.infra.security.config;
 
-import com.api.auth.infra.outgoing.UserORM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +11,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.api.auth.infra.presistence.ClientORM;
 
 @Configuration
 public class ApplicationConfig {
 
-    private final UserORM userORM;
+    private final ClientORM userORM;
 
     @Autowired
-    public ApplicationConfig(UserORM userORM) {
+    public ApplicationConfig(ClientORM userORM) {
         this.userORM = userORM;
     }
 

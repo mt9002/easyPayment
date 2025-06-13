@@ -1,7 +1,7 @@
 package com.api.auth.infra.security.jwt;
 
-import com.api.auth.infra.security.IJWT;
-import com.api.util.Response;
+
+import com.api.auth.app.service.util.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -14,10 +14,9 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,12 +27,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final IJWT jwt;
+    private final JWT jwt;
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public JwtAuthenticationFilter(IJWT jwt, UserDetailsService userDetailsService) {
-        this.jwt = jwt;
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.jwt = new JWT();
         this.userDetailsService = userDetailsService;
     }
 
@@ -73,21 +72,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            Response resp = new Response("Token has expired", HttpServletResponse.SC_UNAUTHORIZED, false, null);
+            ResponseEntity resp = ResponseEntity.status( HttpServletResponse.SC_UNAUTHORIZED).body("Token has expired");
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("Token has expired: " + e.getMessage());
             return;
         } catch (MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            Response resp = new Response("Invalid token", HttpServletResponse.SC_UNAUTHORIZED, false, null);
+            ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Invalid token");
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("Invalid token: {}" + e.getMessage());
             return;
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            Response resp = new Response("JWT validity cannot be asserted and should not be trusted.", HttpServletResponse.SC_UNAUTHORIZED, false, null);
+            ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .body("JWT validity cannot be asserted and should not be trusted.");
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("JWT inválido: {}" + e.getMessage());
@@ -129,7 +129,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public void validAcces(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        Response resp = new Response("No tienes permiso para acceder a este recurso.", HttpServletResponse.SC_FORBIDDEN, false, null);
+        ResponseEntity resp = ResponseEntity.status( HttpServletResponse.SC_FORBIDDEN)
+                .body("No tienes permiso para acceder a este recurso.");
         String json = objectMapper.writeValueAsString(resp);
         response.getWriter().write(json);
     }

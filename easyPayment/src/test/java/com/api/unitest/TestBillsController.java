@@ -1,11 +1,12 @@
 package com.api.unitest;
 
-import com.api.bill.app.controller.BillsController;
-import com.api.auth.app.dto.BillDTO;
+import com.api.auth.infra.security.jwt.JWT;
+import com.api.bill.presentation.BillsController;
+import com.api.bill.presentation.dto.BillDTO;
 import com.api.confg.NoSecurityConfig;
-import com.api.bill.domain.incoming.IBillsService;
-import com.api.auth.infra.security.IJWT;
-import com.api.util.Response;
+import com.api.bill.domain.ports.incoming.IBillsService;
+import com.api.auth.app.service.util.Response;
+import com.api.auth.app.service.util.ResultState;
 import com.api.unitest.fixture.BillFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +43,7 @@ public class TestBillsController {
     }
 
     @MockBean
-    IJWT jwtService;
+    JWT jwtService;
 
     @Test
     public void testFindByIdBill(TestInfo testInfo, TestReporter testReporter) throws Exception {
@@ -51,7 +52,7 @@ public class TestBillsController {
         Long id_bill = 1L;
         BillDTO data = BillFixture.billDTO;
 
-        Response responseFake = new Response("factura encontrada", 200, true, data); // Response quemado fake
+        Response responseFake = new Response("factura encontrada",  ResultState.SUCCESS, data); // Response quemado fake
 
         Mockito.when(billService.findById(id_bill)).thenReturn(responseFake);
 
@@ -64,7 +65,6 @@ public class TestBillsController {
         mockMvc.perform(requestMock)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("factura encontrada"))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 
@@ -78,7 +78,7 @@ public class TestBillsController {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(billDto);
 
-        Response response = new Response("factura creada", 200, true, billDto);
+        Response response = new Response("factura creada",  ResultState.SUCCESS, billDto);
 
         Mockito.when(billService.createBill(billDto)).thenReturn(response);
 
@@ -86,7 +86,6 @@ public class TestBillsController {
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("factura creada"))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 
@@ -106,7 +105,6 @@ public class TestBillsController {
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("$.message").value("Error interno: Error simulado"))
-                .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.success").value(false));
 
     }
@@ -117,7 +115,7 @@ public class TestBillsController {
         Long id_bill = 1L;
         BillDTO data = BillFixture.billDTO;
 
-        Response response = new Response("factura eliminada", 200, true, data);
+        Response response = new Response("factura eliminada",  ResultState.SUCCESS, data);
 
         Mockito.when(billService.deleteBill(id_bill)).thenReturn(response);
         mockMvc.perform(MockMvcRequestBuilders.delete("/bills/delete")
@@ -125,7 +123,6 @@ public class TestBillsController {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("factura eliminada"))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
     }
@@ -137,7 +134,7 @@ public class TestBillsController {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(billDto);
 
-        Response response = new Response("factura creada", 200, true, billDto);
+        Response response = new Response("factura creada",  ResultState.SUCCESS, billDto);
 
         Mockito.when(billService.updateBill(billDto)).thenReturn(response);
 
@@ -145,7 +142,6 @@ public class TestBillsController {
                 .contentType(MediaType.APPLICATION_JSON).content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("factura creada"))
-                .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.event").value("cumpleaños"));
 

@@ -1,8 +1,8 @@
 package com.api.integration.bill;
 
-import com.api.auth.app.dto.BillDTO;
-import com.api.auth.domain.entity.Client;
-import com.api.bill.infra.outgoing.BillsORM;
+import com.api.bill.presentation.dto.BillDTO;
+import com.api.auth.infra.presistence.entityJpa.Client;
+import com.api.bill.infra.repository.BillsORM;
 import com.api.integration.factory.FactoryData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;

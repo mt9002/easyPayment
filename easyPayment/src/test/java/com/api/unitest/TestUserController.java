@@ -1,11 +1,12 @@
 package com.api.unitest;
 
-import com.api.auth.app.controller.UserController;
+import com.api.auth.presentation.controller.UserController;
 import com.api.confg.NoSecurityConfig;
-import com.api.auth.domain.entity.Client;
-import com.api.auth.domain.incoming.IUserService;
-import com.api.auth.infra.security.IJWT;
-import com.api.util.Response;
+import com.api.auth.infra.presistence.entityJpa.Client;
+import com.api.auth.domain.ports.in.IUserService;
+import com.api.auth.infra.security.jwt.JWT;
+import com.api.auth.app.service.util.Response;
+import com.api.auth.app.service.util.ResultState;
 import com.api.unitest.fixture.DTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,13 +41,13 @@ public class TestUserController {
     }
 
     @MockBean
-    IJWT jwtService;
+    JWT jwtService;
 
     @Test
     public void testgetByIdUser(TestInfo testInfo, TestReporter testReporter) throws Exception {
 
         Long id_user = 1L;
-        Response<Client> response = new Response("usuario encontrado", 200, true, DTO.client);
+        Response<Client> response = new Response("usuario encontrado", ResultState.SUCCESS, DTO.userJpa);
 
         Mockito.when(iUserService.getById(id_user)).thenReturn(response);
 
@@ -55,7 +56,7 @@ public class TestUserController {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("usuario encontrado"))
-                .andExpect(jsonPath("$.status").value(200))
+               
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.name").value("mao"));
     }

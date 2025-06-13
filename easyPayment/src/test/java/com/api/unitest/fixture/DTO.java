@@ -1,11 +1,12 @@
 package com.api.unitest.fixture;
 
-import com.api.auth.app.dto.BillDTO;
-import com.api.auth.app.dto.LoginDTO;
-import com.api.bill.app.dto.PExpenserDTO;
-import com.api.auth.app.dto.RegisterDTO;
-import com.api.auth.domain.entity.Client;
+import com.api.bill.presentation.dto.BillDTO;
+import com.api.auth.presentation.dto.LoginDTO;
+import com.api.bill.presentation.dto.PExpenserDTO;
+import com.api.auth.presentation.dto.RegisterDTO;
+import com.api.auth.infra.presistence.entityJpa.Client;
 import com.api.auth.domain.entity.Role;
+import com.api.auth.domain.entity.User;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +18,8 @@ public class DTO {
     public static BillDTO billDTO;
     public static LoginDTO loginDTO;
     public static RegisterDTO registerDTO;
-    public static Client client;
+    public static User user;
+    public static Client userJpa;
 
     @BeforeAll
     public static void beforeAll() {
@@ -40,12 +42,16 @@ public class DTO {
                 "31255",
                 "12345678");
 
-        client = new Client("mao","tovar","mao@gmail.com", "12345");
-        client.setName("mao");
-        client.setPassword("12345");
-        client.setLastName("tovar");
-        client.setEmail("mao@gmail.com");
-        client.setRole(Role.valueOf("USER"));
+        user = new User("mao", "tovar", "mao@gmail.com", "12345");
+        user.setName("mao");
+        user.setPassword("12345");
+        user.setLastName("tovar");
+        user.setEmail("mao@gmail.com");
+        user.setRole(Role.valueOf("USER"));
+
+        userJpa = new Client("mao", "tovar", "mao@gmail.com", "12345");
+        userJpa.setRole(Role.valueOf("USER"));
+        
     }
 
 }

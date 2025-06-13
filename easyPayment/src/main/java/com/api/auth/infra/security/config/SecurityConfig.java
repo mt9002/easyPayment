@@ -43,7 +43,7 @@ public class SecurityConfig {
                         "/home/register",
                         "/favicon.ico", 
                         "/images/**",
-                        "/").permitAll()
+                        "/").permitAll() 
        
                 .anyRequest().authenticated()
                 ) 

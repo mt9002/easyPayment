@@ -1,7 +1,6 @@
 package com.api.ejemploWebFlexReactive.domain;
 
-import com.api.ejemploWebFlexReactive.domain.Iservice;
-import com.api.util.Response;
+import com.api.auth.app.service.util.Response;
 import java.time.Duration;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -16,7 +15,7 @@ public class ejemploWebFluxCalculadora implements Iservice {
         return Mono.delay(Duration.ofSeconds(2)) // Simula un retraso no bloqueante de 1 segundo
                 .then(Mono.fromCallable(() -> {
                     System.nanoTime();
-                    return new Response("OK bien", 200, true, data);
+                    return Response.success("OK bien", data);
                 }));
     }
 
@@ -27,7 +26,7 @@ public class ejemploWebFluxCalculadora implements Iservice {
         return Mono.delay(Duration.ofSeconds(2)) // Simula un retraso no bloqueante de 1 segundo
                 .then(Mono.fromCallable(() -> {
                     System.nanoTime();
-                    return new Response("OK bien", 200, true, data);
+                    return Response.success("OK bien", data);
                 }));
     }
 
@@ -47,7 +46,7 @@ public class ejemploWebFluxCalculadora implements Iservice {
                 .map(tuple -> {
                     Response sumaResponse = tuple.getT1();
                     Response restaResponse = tuple.getT2();
-                    return new Response("Operaciones completadas", 200, true, sumaResponse.getData() + ", " + restaResponse.getData());
+                    return Response.success("Operaciones completadas", sumaResponse.getData() + ", " + restaResponse.getData());
                 });
     }
 }

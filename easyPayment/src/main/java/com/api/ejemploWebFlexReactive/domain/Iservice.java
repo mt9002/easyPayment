@@ -1,6 +1,6 @@
 package com.api.ejemploWebFlexReactive.domain;
 
-import com.api.util.Response;
+import com.api.auth.app.service.util.Response;
 import reactor.core.publisher.Mono;
 
 public interface Iservice {

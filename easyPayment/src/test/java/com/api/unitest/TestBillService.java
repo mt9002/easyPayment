@@ -1,8 +1,10 @@
 package com.api.unitest;
 
-import com.api.bill.infra.outgoing.IBillRepository;
-import com.api.bill.domain.service.BillsService;
-import com.api.util.Response;
+import com.api.bill.domain.ports.outgoing.IBillRepository;
+import com.api.bill.app.service.BillsService;
+import com.api.auth.app.service.util.Response;
+import com.api.bill.domain.entity.Bill;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -28,16 +30,14 @@ public class TestBillService {
         // Arrange
         Long idFake = Long.MAX_VALUE;
 
-        Response respFake = new Response("Bill encontrado firme", 200, true, null);
+        Bill bill = new Bill("party", "12");
 
-        Mockito.when(billsRepo.findByIdBill(idFake)).thenReturn(respFake);
+        Mockito.when(billsRepo.findByIdBill(idFake)).thenReturn(Optional.of(bill));
 
         // Act
         Response resp = billsService.findById(idFake);
         
         // Assert
-        assertEquals(200, resp.getStatus());
-        assertTrue(resp.isSuccess());
         assertEquals("Bill encontrado firme", resp.getMessage()); 
 
     };

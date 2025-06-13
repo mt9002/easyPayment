@@ -1,7 +1,7 @@
 package com.api.unitest.fixture;
 
-import com.api.auth.app.dto.BillDTO;
-import com.api.bill.app.dto.PExpenserDTO;
+import com.api.bill.presentation.dto.BillDTO;
+import com.api.bill.presentation.dto.PExpenserDTO;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;

@@ -1,7 +1,7 @@
 package com.api.integration.auth;
 
-import com.api.auth.app.dto.RegisterDTO;
-import com.api.auth.domain.entity.Client;
+import com.api.auth.presentation.dto.RegisterDTO;
+import com.api.auth.infra.presistence.entityJpa.Client;
 import com.api.integration.factory.FactoryData;
 import com.api.unitest.fixture.DTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
