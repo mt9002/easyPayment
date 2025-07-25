@@ -1,10 +1,6 @@
 package com.api.auth.presentation.util;
 
 import com.api.auth.app.service.util.ResultState;
-import static com.api.auth.app.service.util.ResultState.NOT_FOUND;
-import static com.api.auth.app.service.util.ResultState.SUCCESS;
-import static com.api.auth.app.service.util.ResultState.UNAUTHORIZED;
-import static com.api.auth.app.service.util.ResultState.VALIDATION_ERROR;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 

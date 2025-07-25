@@ -8,11 +8,16 @@ import com.api.bill.domain.entity.PersonalExpenses;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BillMapper {
+public class BillMapper<T> {
+    private Bill bill;
 
-    public Bill createBill(BillDTO dto) {
+    public BillMapper(Bill bill) {
+        this.bill = bill;
+    }
+
+    public static <T> BillMapper<Bill> toBill(BillDTO dto) {
         Bill bill = new Bill(dto.getEvent(), dto.getMesa());
-        
+
         if (dto.getPersonalExpenses() != null) {
             Set<PersonalExpenses> personalExpensesSet = new HashSet<>();
 
@@ -24,18 +29,25 @@ public class BillMapper {
                 personalExpensesSet.add(personalExpenses);
             }
             bill.setPersonalExpenses(personalExpensesSet);
-            
+
         }
-        
+
+        return new BillMapper<>(bill);
+    }
+
+    public static<T> BillMapper<Bill> toBill(BillDTO dto, String update) {
+        Bill bill = new Bill(
+                dto.getEvent(),
+                dto.getMesa());
+        bill.setId(dto.getId());
+        return new BillMapper<>(bill);
+    }
+
+    public Bill getBill() {
         return bill;
     }
 
-    public BillJPA updateBill(BillDTO dto) {
-        BillJPA bill = new BillJPA(
-                dto.getEvent(),
-                dto.getMesa()
-        );
-        bill.setId(dto.getId());
-        return bill;
+    public void setBill(Bill bill) {
+        this.bill = bill;
     }
 }

@@ -29,11 +29,13 @@ public class AuthController {
         Response response = authService.register(regiterDTO);   
         return ResponseEntity.status(MapperStatus.map(response.getState())).body(response);
         }
-    
+     
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
+        System.out.println(loginDTO.getEmail());
         Response response = authService.login(loginDTO);
+        System.out.println("Login response: " + response.getMessage());
         return ResponseEntity.status(MapperStatus.map(response.getState())).body(response);
     }
 }

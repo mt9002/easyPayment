@@ -7,12 +7,13 @@ import com.api.bill.domain.ports.incoming.IBillsService;
 import com.api.auth.app.service.util.Response;
 import com.api.auth.app.service.util.ResultState;
 import com.api.bill.domain.entity.Bill;
-import com.api.bill.domain.entity.PersonalExpenses;
+
+import static com.api.auth.app.service.util.ResultState.valueOf;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +28,12 @@ public class BillsService implements IBillsService {
 
     @Override
     public Response createBill(BillDTO billDTO) {
-        BillMapper billMapper = new BillMapper();
-        Bill bill = billMapper.createBill(billDTO);
-        if (billRepository.createBill(bill).isEmpty()) {
-            Response.failure("Bill no creado", ResultState.NOT_FOUND);
+        Bill bill = BillMapper.toBill(billDTO).getBill();
+        Optional<Bill> optionalBill = billRepository.createBill(bill);
+        if (optionalBill.isPresent()) {
+            return Response.success("Bill creado", optionalBill);
         }
-        return Response.success("Bill creado");
+        return Response.failure("Bill no creado", ResultState.NOT_FOUND);
     }
 
     @Override
@@ -59,10 +60,8 @@ public class BillsService implements IBillsService {
     }
 
     @Override
-    public Response updateBill(BillDTO billDTO
-    ) {
-        BillMapper billMapper = new BillMapper();
-        BillJPA bill = billMapper.updateBill(billDTO);
+    public Response updateBill(BillDTO billDTO) {
+        Bill bill = BillMapper.toBill(billDTO, "update").getBill();
         Response response = billRepository.updateBill(bill);
         return response;
     }

@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +41,6 @@ public class BillJPA {
     public BillJPA(String event, String mesa) {
         this.event = event;
         this.mesa = mesa;
-
     }
 
     public BillJPA() {

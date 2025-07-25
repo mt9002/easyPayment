@@ -1,6 +1,7 @@
 package com.api.bill.presentation;
 
 import com.api.bill.presentation.dto.BillDTO;
+import com.api.bill.domain.entity.Bill;
 import com.api.bill.domain.ports.incoming.IBillsService;
 import com.api.auth.app.service.util.Response;
 import com.api.auth.presentation.util.MapperStatus;
@@ -23,7 +24,6 @@ public class BillsController {
 
     private final IBillsService billsService;
 
-    @Autowired
     public BillsController(IBillsService billsService) {
         this.billsService = billsService;
     }
@@ -31,11 +31,8 @@ public class BillsController {
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     @PostMapping("/create")
     public ResponseEntity createBill(@RequestBody BillDTO billDTO) {
-
         Response resp = billsService.createBill(billDTO);
-
         return ResponseEntity.status(MapperStatus.map(resp.getState())).body(resp);
-
     }
 
     @Operation(security = @SecurityRequirement(name = "bearer-key"))

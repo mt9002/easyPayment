@@ -26,20 +26,23 @@ public class BillImplement implements IBillRepository {
 
     @Override
     public Optional<Bill> createBill(Bill bill) {
+
         BillJPA billJpas = billsORM.save(billtoJpa(bill));
-        return Optional.of(JpatoBill(billJpas));
+        Bill billResp = JpatoBill(billJpas);
+        System.out.println("Este es el id..." + billResp.getId());
+        return Optional.of(billResp);
     }
 
     @Override
     public Optional<Bill> findByIdBill(Long id) {
 
-        Optional<Bill> bill = billsORM.findById(id).map(this :: JpatoBill);
+        Optional<Bill> bill = billsORM.findById(id).map(this::JpatoBill);
 
         Set<String> printedExpenses = new HashSet<>();
         if (bill.isPresent()) {
 
             for (PersonalExpenses expense : bill.get().getPersonalExpenses()) {
-                String expenseKey = expense.getClient_id()+ expense.getNameProduct();
+                String expenseKey = expense.getClient_id() + expense.getNameProduct();
                 if (!printedExpenses.contains(expenseKey)) {
                     System.out.println("Gasto: " + expenseKey);
                     printedExpenses.add(expenseKey);
@@ -52,7 +55,7 @@ public class BillImplement implements IBillRepository {
     }
 
     @Override
-    public Response updateBill(BillJPA bill) {
+    public Response updateBill(Bill bill) {
 
         try {
             BillJPA billNew = billsORM.findById(bill.getId())
@@ -82,17 +85,23 @@ public class BillImplement implements IBillRepository {
         }
     }
 
-private Bill JpatoBill(BillJPA billJPA) {
+    private Bill JpatoBill(BillJPA billJPA) {
         Bill bill = new Bill(billJPA.getEvent(), billJPA.getMesa());
         bill.setId(billJPA.getId());
+        System.out.println("este es el id de la bill: " + billJPA.getId());
+        
+        if (billJPA.getPersonalExpenses() == null || billJPA.getPersonalExpenses().isEmpty()) {
+            return bill; 
+        }
         Set<PersonalExpenses> personalExpenses = new HashSet<>();
         for (PersonalExpensesJPA peJPA : billJPA.getPersonalExpenses()) {
             PersonalExpenses pe = JpatoPersonalExpense(peJPA);
             personalExpenses.add(pe);
         }
-        bill.setPersonalExpenses(personalExpenses); 
+        bill.setPersonalExpenses(personalExpenses);
         return bill;
     }
+
     private PersonalExpenses JpatoPersonalExpense(PersonalExpensesJPA peJPA) {
         PersonalExpenses pe = new PersonalExpenses();
         pe.setNameProduct(peJPA.getNameProduct());
@@ -104,11 +113,16 @@ private Bill JpatoBill(BillJPA billJPA) {
 
     private BillJPA billtoJpa(Bill bill) {
         BillJPA billJpa = new BillJPA(bill.getEvent(), bill.getMesa());
-        billJpa.setId(bill.getId());
-        Set<PersonalExpensesJPA> personalExpenseToJpa = bill.getPersonalExpenses().stream().map(this::PersonalExpenseToJpa)
-                .collect(Collectors.toSet());
+        if (bill.getPersonalExpenses() != null) {
+            System.out.println("entro a billtoJpa");
+            billJpa.setId(bill.getId());
+            Set<PersonalExpensesJPA> personalExpenseToJpa = bill.getPersonalExpenses().stream()
+                    .map(this::PersonalExpenseToJpa)
+                    .collect(Collectors.toSet());
 
-        billJpa.setPersonalExpenses(personalExpenseToJpa);
+            billJpa.setPersonalExpenses(personalExpenseToJpa);
+        }
+        System.out.println("por esto se rompe");
         return billJpa;
     }
 

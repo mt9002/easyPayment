@@ -6,7 +6,7 @@ public class PersonalExpenses {
     private Double price;
     private Integer amount;
     private Long client_id;
-    private Bill bill; 
+    private Bill bill;
     
     public PersonalExpenses(){};
 

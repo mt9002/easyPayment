@@ -6,13 +6,11 @@ import com.api.auth.domain.ports.out.IUserRepository;
 import com.api.auth.app.service.util.Response;
 import com.api.auth.app.service.util.ResultState;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserService implements IUserService {
 
     private final IUserRepository iUserRepository;
 
-    @Autowired
     public UserService(IUserRepository iUserRepository) {
         this.iUserRepository = iUserRepository;
     }
