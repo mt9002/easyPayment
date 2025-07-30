@@ -1,7 +1,7 @@
 package com.api.auth.infra.security.jwt;
 
-
 import com.api.auth.app.service.util.Response;
+import com.api.auth.app.service.util.ResultState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -72,14 +72,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ResponseEntity resp = ResponseEntity.status( HttpServletResponse.SC_UNAUTHORIZED).body("Token has expired");
+            ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(
+                    Response.failure("Token has expired ",
+                            ResultState.UNAUTHORIZED));
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("Token has expired: " + e.getMessage());
             return;
         } catch (MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Invalid token");
+            ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .body(Response.failure("Invalid token", ResultState.UNAUTHORIZED));
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("Invalid token: {}" + e.getMessage());
@@ -87,7 +90,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-                    .body("JWT validity cannot be asserted and should not be trusted.");
+                    .body(Response.failure("JWT validity cannot be asserted and should not be trusted.",
+                            ResultState.UNAUTHORIZED));
             String json = objectMapper.writeValueAsString(resp);
             response.getWriter().write(json);
             logger.warn("JWT inválido: {}" + e.getMessage());
@@ -112,7 +116,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean hasRole(String role) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return false;  // Si no hay autenticación, no tiene roles
+            return false; // Si no hay autenticación, no tiene roles
         }
         boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(role));
@@ -129,8 +133,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public void validAcces(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        ResponseEntity resp = ResponseEntity.status( HttpServletResponse.SC_FORBIDDEN)
-                .body("No tienes permiso para acceder a este recurso.");
+        ResponseEntity resp = ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN)
+                .body(Response.failure("No tienes permiso para acceder a este recurso.", ResultState.UNAUTHORIZED));
         String json = objectMapper.writeValueAsString(resp);
         response.getWriter().write(json);
     }
